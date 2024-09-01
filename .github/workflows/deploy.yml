@@ -75,7 +75,7 @@ jobs:
           USER: ${{ secrets.O2SWITCH_USER }}
         run: |
           ssh -o StrictHostKeyChecking=no $USER@$HOST '
-            cd /home/hasa4710/jobfeeling &&  
+            cd /home/hasa4710/jobfeeling.branabenjamin.fr &&  
             git pull origin main &&
             source venv/bin/activate &&
             pip install -r requirements.txt &&
