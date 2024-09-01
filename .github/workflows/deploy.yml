@@ -3,7 +3,7 @@ name: Django CI/CD with Tailwind
 on:
   push:
     branches:
-      - main  # Déclenche le workflow sur chaque push vers la branche 'main'
+      - main
 
 jobs:
   build:
@@ -16,19 +16,19 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
-          python-version: '3.11.9'  # Assurez-vous que la version correspond à celle utilisée sur le serveur
+          python-version: '3.11.9'
 
       - name: Install Python dependencies
         run: |
           python -m venv venv
-          source venv/bin/activate  # Utilisation de 'source' pour activer l'environnement virtuel
+          source venv/bin/activate
           pip install --upgrade pip
           pip install -r requirements.txt
 
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '20.14.0'  # Assurez-vous que la version correspond à celle utilisée pour le projet
+          node-version: '20.14.0'
 
       - name: Install Node.js dependencies
         run: npm install
@@ -46,7 +46,7 @@ jobs:
           MYSQL_HOST: ${{ secrets.MYSQL_HOST }}
           MYSQL_PORT: ${{ secrets.MYSQL_PORT }}
         run: |
-          source venv/bin/activate  # Assurez-vous d'activer l'environnement virtuel avant d'exécuter les tests
+          source venv/bin/activate
           python manage.py test
 
   deploy:
@@ -60,7 +60,7 @@ jobs:
       - name: Add SSH key
         uses: webfactory/ssh-agent@v0.5.4
         with:
-          ssh-private-key: ${{ secrets.O2SWITCH_SSH_KEY }}  # Assurez-vous que ce secret est correctement configuré dans les GitHub Secrets
+          ssh-private-key: ${{ secrets.O2SWITCH_SSH_KEY }}
 
       - name: Deploy to O2switch
         env:
@@ -71,15 +71,16 @@ jobs:
           MYSQL_PASSWORD: ${{ secrets.MYSQL_PASSWORD }}
           MYSQL_HOST: ${{ secrets.MYSQL_HOST }}
           MYSQL_PORT: ${{ secrets.MYSQL_PORT }}
-          HOST: ${{ secrets.O2SWITCH_HOST }}  # Assurez-vous que ce secret est correctement configuré dans les GitHub Secrets
-          USER: ${{ secrets.O2SWITCH_USER }}  # Assurez-vous que ce secret est correctement configuré dans les GitHub Secrets
+          HOST: ${{ secrets.O2SWITCH_HOST }}
+          USER: ${{ secrets.O2SWITCH_USER }}
         run: |
-          ssh -o StrictHostKeyChecking=no $USER@$HOST '
-            cd /home/hasa4710/jobfeeling.branabenjamin.fr &&  # Assurez-vous que le chemin est correct sur votre serveur
-            git pull origin main &&
-            source venv/bin/activate &&  # Activer l'environnement virtuel après chaque connexion SSH
-            pip install -r requirements.txt &&
-            npm install &&
-            npm run build:css &&
-            python manage.py migrate &&
-            python manage.py collectstatic --noinput'
+          ssh -o StrictHostKeyChecking=no "${{ secrets.O2SWITCH_USER }}@${{ secrets.O2SWITCH_HOST }}" << 'EOF'
+            cd /home/hasa4710/jobfeeling.branabenjamin.fr
+            git pull origin main
+            source venv/bin/activate
+            pip install -r requirements.txt
+            npm install
+            npm run build:css
+            python manage.py migrate
+            python manage.py collectstatic --noinput
+          EOF
