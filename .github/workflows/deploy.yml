@@ -16,7 +16,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
-          python-version: '3.11.9'  
+          python-version: '3.11.9'
 
       - name: Install Python dependencies
         run: |
@@ -74,4 +74,12 @@ jobs:
           HOST: ${{ secrets.O2SWITCH_HOST }}
           USER: ${{ secrets.O2SWITCH_USER }}
         run: |
-          ssh -o StrictHostKeyChecking=no $USER@$HOST 'cd /chemin/vers/votre/projet && git pull origin main && source venv/bin/activate && pip install -r requirements.txt && npm install && npm run build:css && python manage.py migrate && python manage.py collectstatic --noinput'
+          ssh -o StrictHostKeyChecking=no $USER@$HOST '
+            cd /home/hasa4710/jobfeeling &&  
+            git pull origin main &&
+            source venv/bin/activate &&
+            pip install -r requirements.txt &&
+            npm install &&
+            npm run build:css &&
+            python manage.py migrate &&
+            python manage.py collectstatic --noinput'
