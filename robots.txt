@@ -1,0 +1,11 @@
+User-agent: *
+Disallow: /admin/
+Disallow: /login/
+Disallow: /signup/
+Disallow: /private/
+Disallow: /cgi-bin/
+
+# Allow everything else
+Allow: /
+
+Sitemap: https://jobfeeling.branabenjamin.fr/sitemap.xml

@@ -1,0 +1,220 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Dashboard - JobFeeling{% endblock %}
+
+{% block breadcrumb %}
+<li class="flex items-center">
+  <span class="font-bold">Dashboard</span>
+</li>
+{% endblock %}
+
+{% block content %}
+<div class="containerDashboards">
+  <h1 class="h1Style">Tableau de Bord</h1>
+
+  <hr class="my-4" />
+  <h2 class="mb-4 text-xl font-titleFont">Vos annonces</h2>
+
+  <div class="flex flex-row flex-wrap justify-center gap-4 mb-4">
+    <button id="toggleFormBtn" class="btnModifier">Créer une nouvelle annonce</button>
+    <a href="{% url 'dashboard' %}?status=active" class="btnModifier">Annonces Actives</a>
+    <a href="{% url 'dashboard' %}?status=archived" class="btnModifier">Annonces Archivées</a>
+    <a href="{% url 'dashboard' %}?status=pending" class="btnModifier">Annonces en attente</a>
+  </div>
+
+  <form id="createAnnonceForm" method="POST" action="{% url 'dashboard' %}" class="hidden p-4 styleElementscards">
+    {% csrf_token %}
+    <div class="mb-4">
+      {{ form.metier.label_tag }}
+      <select name="metier" id="metier" class="inputStyle">
+        <option value="" disabled selected>---------</option>
+        {% for choice in form.metier.field.choices %}
+        <option value="{{ choice.0 }}" title="{{ choice.1 }}" class="truncate" style="max-width: 150px">{{ choice.1 }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="mb-4">
+      {{ form.description.label_tag }}<br />
+      {{ form.description }}
+    </div>
+    <div class="mb-4">
+      {{ form.lieu.label_tag }}<br />
+      {{ form.lieu }}
+    </div>
+    <div class="mb-4">
+      {{ form.type_contrat.label_tag }}<br />
+      {{ form.type_contrat }}
+    </div>
+    <div class="mb-4">
+      {{ form.salaire.label_tag }}<br />
+      {{ form.salaire }}
+    </div>
+    <button type="submit" name="create-annonce" class="btnValidate">Créer</button>
+  </form>
+
+  <div class="flex flex-row flex-wrap justify-center gap-4" id="annonces-container">
+    {% if annonces %}
+      {% for annonce in annonces %}
+      <div class="annonceCard borderShadow">
+        <div class="groupAnnonce">
+          <h3 class="w-full text-xl font-bold text-center font-titleFont">{{ annonce.metier.nom_metier }}</h3>
+          <p class="flex flex-wrap gap-4 leading-8 tablette:flex-col font-textFont">
+            <span class="font-bold">Date de création : </span>{{ annonce.date_creation }}
+          </p>
+        </div>
+        <div class="groupAnnonce">
+          <p class="flex flex-col flex-wrap gap-4 leading-8 font-textFont">
+            <span class="font-bold">Description : </span>{{ annonce.description }}
+          </p>
+        </div>
+        <p class="flex flex-wrap gap-4 leading-8 tablette:flex-col font-textFont">
+          <span class="font-bold">Lieu : </span>{{ annonce.lieu }}
+        </p>
+        <div class="groupAnnonce">
+          <p class="flex flex-wrap gap-4 leading-8 tablette:flex-col font-textFont">
+            <span class="font-bold">Type de contrat : </span>{{ annonce.type_contrat }}
+          </p>
+        </div>
+        <div class="groupAnnonce">
+          <p class="flex flex-wrap gap-4 leading-8 tablette:flex-col font-textFont">
+            <span class="font-bold">Salaire : </span>{{ annonce.salaire }} €
+          </p>
+        </div>
+
+        {% if annonce.status != 'pending' %}
+        <a href="{% url 'voir_candidature' annonce.id %}" class="inline-block mt-2 underline text-orange hover:text-hoverColor font-textFont">Voir les candidatures</a>
+        <div class="groupBtn">
+          <button class="btnModifier borderShadow" onclick="openEditModal({{ annonce.id }})">Modifier</button>
+          <form action="{% url 'delete_annonce' annonce.id %}" method="POST" class="flex items-center delete-form" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette annonce ?');">
+            {% csrf_token %}
+            <button type="submit" class="flex items-center h-full btnAnnuler">Supprimer</button>
+          </form>
+          {% if not annonce.is_archived %}
+          <a href="{% url 'archive_annonce' annonce.id %}" class="btnArchive">Archiver</a>
+          {% else %}
+          <a href="{% url 'unarchive_annonce' annonce.id %}" class="btnArchive">Désarchiver</a>
+          {% endif %}
+        </div>
+        {% endif %}
+      </div>
+      {% endfor %}
+    {% else %}
+    <div class="flex justify-center w-full">
+      <p class="elementVide">Aucune annonce !!</p>
+    </div>
+    {% endif %}
+  </div>
+</div>
+
+<!-- Modal pour la modification de l'annonce -->
+<div id="editModal" class="hidden containerFormModif">
+  <div class="formModif"></div>
+  <div class="divFormModif">
+    <h3 class="mb-4 text-lg font-bold text-gray-900 font-titleFont">Modifier l'annonce</h3>
+    <form id="editAnnonceForm" method="POST" action="">
+      {% csrf_token %}
+      <div class="mb-4">
+        <label for="modal-metier" class="block text-sm font-bold text-gray-700">Métier</label>
+        <select id="modal-metier" name="metier" class="inputStyle">
+          {% for choice in form.metier.field.choices %}
+          <option value="{{ choice.0 }}" title="{{ choice.1 }}" class="truncate" style="max-width: 150px">{{ choice.1 }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="mb-4">
+        <label for="modal-description" class="block text-sm font-bold text-gray-700">Description</label>
+        <textarea id="modal-description" name="description" class="inputStyle"></textarea>
+      </div>
+      <div class="mb-4">
+        <label for="modal-lieu" class="block text-sm font-bold text-gray-700">Lieu</label>
+        <input type="text" id="modal-lieu" name="lieu" class="inputStyle" />
+      </div>
+      <div class="mb-4">
+        <label for="modal-type_contrat" class="block text-sm font-bold text-gray-700">Type de contrat</label>
+        <select id="modal-type_contrat" name="type_contrat" class="inputStyle">
+          {% for choice in form.type_contrat.field.choices %}
+          <option value="{{ choice.0 }}" title="{{ choice.1 }}" class="truncate" style="max-width: 150px">{{ choice.1 }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="mb-4">
+        <label for="modal-salaire" class="block text-sm font-bold text-gray-700">Salaire</label>
+        <input type="number" id="modal-salaire" name="salaire" step="0.01" class="inputStyle" />
+      </div>
+      <input type="hidden" name="annonce_id" id="modal-annonce-id" />
+      <div class="flex justify-end gap-4 space-x-2">
+        <button type="submit" class="btnValidate">Enregistrer</button>
+        <button type="button" class="btnAnnuler" onclick="closeEditModal()">Annuler</button>
+      </div>
+    </form>
+  </div>
+</div>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const deleteForms = document.querySelectorAll(".delete-form");
+    deleteForms.forEach((form) => {
+      form.addEventListener("submit", function (event) {
+        const confirmation = confirm("Êtes-vous sûr de vouloir supprimer cette annonce ?");
+        if (!confirmation) {
+          event.preventDefault();
+        }
+      });
+    });
+
+    const toggleFormBtn = document.getElementById("toggleFormBtn");
+    const createAnnonceForm = document.getElementById("createAnnonceForm");
+
+    toggleFormBtn.addEventListener("click", function () {
+      createAnnonceForm.classList.toggle("hidden");
+    });
+
+    window.openEditModal = function (annonceId) {
+      const modal = document.getElementById("editModal");
+      const form = document.getElementById("editAnnonceForm");
+      form.action = `/annonce/update/${annonceId}/`;
+
+      fetch(`/annonce/update/${annonceId}/`)
+        .then((response) => response.json())
+        .then((data) => {
+          const annonce = data.annonce;
+          document.getElementById("modal-metier").value = annonce.metier;
+          document.getElementById("modal-description").value = annonce.description;
+          document.getElementById("modal-lieu").value = annonce.lieu;
+          document.getElementById("modal-type_contrat").value = annonce.type_contrat;
+          document.getElementById("modal-salaire").value = annonce.salaire;
+          document.getElementById("modal-annonce-id").value = annonce.id;
+          modal.classList.remove("hidden");
+          modal.classList.add("flex");
+        });
+    };
+
+    window.closeEditModal = function () {
+      const modal = document.getElementById("editModal");
+      modal.classList.add("hidden");
+    };
+
+    document.getElementById("editAnnonceForm").addEventListener("submit", function(event) {
+      event.preventDefault();
+      const form = event.target;
+      const formData = new FormData(form);
+
+      fetch(form.action, {
+        method: 'POST',
+        body: formData,
+        headers: {
+          'X-CSRFToken': formData.get('csrfmiddlewaretoken')
+        }
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          window.location.href = data.redirect;
+        } else {
+          console.error(data.errors);
+        }
+      });
+    });
+  });
+</script>
+{% endblock %}

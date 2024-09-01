@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+
+{% block title %}Candidatures pour {{ annonce.titre }}{% endblock %}
+{% block breadcrumb %}
+<li class="flex items-center">
+    <span class="font-bold">Gestion candidatures</span>
+</li>
+{% endblock %}
+{% block content %}
+<div class="container mx-auto my-8">
+    <div class="divTitle">
+        <h1 class="h1Style">Candidatures pour {{ annonce.titre }}</h1>
+        <a class="btnArchive" href="{% url 'dashboard' %}"> Retour au Dashboard </a>
+    </div>    
+    {% if candidatures %}
+        <div class="flex flex-row flex-wrap gap-4" id="candidature-container">
+            {% for candidature in candidatures %}
+            <div class="candidature-card" data-id="{{ candidature.id }}">
+                <span class="text-lg font-bold">{{ candidature.user.get_full_name }}</span>
+                <p><strong>Date de postulation:</strong> {{ candidature.date_creation }}</p>
+                <p><strong>Statut:</strong> {{ candidature.etat }}</p>
+                <!-- Formulaire pour valider ou refuser la candidature -->
+                <form method="post" class="candidature-form">
+                    {% csrf_token %}
+                    <input type="hidden" name="candidature_id" value="{{ candidature.id }}">
+                    <input type="hidden" name="action" class="action-field">
+                    <button type="button" data-action="accepter" class="btnValidate action-button">Accepter</button>
+                    <button type="button" data-action="refuser" class="btnAnnuler action-button">Refuser</button>
+                </form>
+                <a href="{% url 'view_candidate_profile' candidature.user.id annonce.id %}" class="mt-2 btnModifier">Voir Profil</a>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p class="text-center">Aucune candidature pour cette annonce.</p>
+    {% endif %}
+
+    <h2 class="divCandidature">Historique des candidatures</h2>
+    <div class="flex flex-row flex-wrap justify-center gap-4">
+        <button class="btnModifier toggle-section" hx-get="{% url 'accepted_candidatures' annonce.id %}" hx-target="#candidature-history" hx-swap="innerHTML">Voir candidatures acceptées:</button>
+        <button class="btnModifier toggle-section" hx-get="{% url 'refused_candidatures' annonce.id %}" hx-target="#candidature-history" hx-swap="innerHTML">Voir candidatures refusées:</button>
+    </div>
+
+    <div id="candidature-history" class="mt-4 candidature-history">
+    </div>
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('.action-button').forEach(button => {
+            button.addEventListener('click', function() {
+                const action = this.getAttribute('data-action');
+                const form = this.closest('form');
+                form.querySelector('.action-field').value = action;
+                const formData = new FormData(form);
+
+                fetch("{% url 'valider_candidature' 0 %}".replace('0', formData.get('candidature_id')), {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-CSRFToken': formData.get('csrfmiddlewaretoken')
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        const card = document.querySelector(`.candidature-card[data-id="${formData.get('candidature_id')}"]`);
+                        card.remove();
+                    } else {
+                        console.error(data.message);
+                    }
+                });
+            });
+        });
+    });
+</script>
+{% endblock %}

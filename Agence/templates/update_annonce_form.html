@@ -1,0 +1,24 @@
+<form method="POST" action="">
+    {% csrf_token %}
+    <div class="mb-4">
+        {{ form.metier.label_tag }}<br>
+        {{ form.metier }}
+    </div>
+    <div class="mb-4">
+        {{ form.description.label_tag }}<br>
+        {{ form.description }}
+    </div>
+    <div class="mb-4">
+        {{ form.lieu.label_tag }}<br>
+        {{ form.lieu }}
+    </div>
+    <div class="mb-4">
+        {{ form.type_contrat.label_tag }}<br>
+        {{ form.type_contrat }}
+    </div>
+    <div class="mb-4">
+        {{ form.salaire.label_tag }}<br>
+        {{ form.salaire }}
+    </div>
+    <button type="submit" class="btnValidate">Enregistrer</button>
+</form>

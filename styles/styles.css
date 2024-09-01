@@ -1,0 +1,581 @@
+/* Tailwind CSS */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Composants */
+
+.styleElements{
+  @apply  styleColorText styleColorBackground;
+}
+
+.styleElementscards{
+  @apply  bg-secondary dark:bg-secondaryDark text-textColor dark:text-textColorDark bg-opacity-30;
+}
+.styleColorText{
+  @apply text-textColor dark:text-textColorDark;
+}
+.styleColorBackground{
+  @apply bg-background dark:bg-backgroundDark;
+}
+.sectionContainer{
+  @apply container p-4 mx-auto my-8 rounded-lg shadow-md styleElementscards;
+}
+body {
+  @apply flex justify-center min-h-screen styleColorText styleColorBackground font-textFont;
+}
+
+/* Main */
+.mainStyle {
+  @apply flex flex-col justify-start min-h-screen lg:w-10/12 tablette:w-full;
+}
+.elementVide{
+  @apply p-4 text-center text-gray-500 lg:w-2/12 tablette:w-1/2 borderShadow;
+}
+.divTitle {
+  @apply flex items-center justify-between w-full mt-4 lg:flex-row tablette:flex-col;
+}
+/* Candidature */
+.divCandidature{
+  @apply mt-8 mb-4 text-xl font-bold tablette:text-center;
+}
+.candidature-card{
+  @apply flex flex-col items-center gap-1 p-4 borderShadow styleElementscards;
+}
+.candidature-form{
+  @apply flex flex-col gap-2;
+}
+.tooltip {
+  position: relative;
+  cursor: pointer;
+}
+
+.tooltip::after {
+  content: attr(title);
+  position: absolute;
+  white-space: nowrap;
+  background-color: black;
+  color: white;
+  padding: 0.5em;
+  border-radius: 0.25em;
+  opacity: 0;
+  transition: opacity 0.2s ease-in-out;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.tooltip:hover::after {
+  opacity: 1;
+}
+/************************ Header *******************************/
+.headerStyle {
+  @apply flex flex-row items-center justify-between w-full px-16 tablette:px-8 mobile:px-1;
+}
+
+.navStyle {
+  @apply flex flex-row tablette:flex-col items-center w-full gap-6  justify-evenly tablette:justify-center
+}
+
+.tabletteNavStyle {
+  @apply fixed inset-0 z-50 flex-col p-4 space-y-2 bg-background/80 dark:bg-backgroundDark/80
+}
+
+.ulNavStyle {
+  @apply flex flex-col items-center justify-center w-full h-full gap-4 text-2xl font-bold font-titleFont; 
+}
+
+.btnClose {
+  @apply text-red-500 hover:text-red-700 borderShadow w-6 font-bold
+}
+
+.btnMenuBurger {
+  @apply lg:hidden;
+}
+#menuButton{
+  @apply bg-background;
+}
+.menuDesktop {
+  @apply  tablette:hidden lg:flex lg:flex-row lg:space-x-4 text-textColor 
+}
+
+/*li*/
+.itemMenu {
+  @apply p-1 hover:bg-black/10 dark:hover:bg-tertinary hover:rounded hover:scale-95 hover:text-black dark:hover:text-background styleColorText;
+}
+
+.error {
+  @apply font-bold text-red-600;
+}
+
+.messageError {
+  @apply absolute p-4 mb-4 font-bold text-black -translate-x-1/2 bg-red-500 rounded-sm tablette:w-full left-1/2;
+}
+
+#success-message {
+  @apply fixed hidden px-4 py-3 font-bold text-green-700 bg-green-100 border border-green-400 rounded bottom-4 right-4;
+}
+.message {
+  @apply relative px-4 py-3 text-green-700 bg-green-100 border border-green-400 rounded
+}
+.validateCaractere{
+  @apply font-bold text-green-500;
+}
+.forbiddenSymbole{
+  @apply font-bold text-red-500;
+}
+.derniereAnnonce{
+  @apply flex flex-col w-full gap-8 justify-center mb-16
+}
+.containerBlocs{
+  @apply flex tablette:flex-col lg:flex-row w-full gap-8 justify-center py-4
+}
+
+
+/*Logo*/
+.logoStyle {
+  @apply rounded-full bg-background;
+}
+
+/**************************** Section Principale ***************************/
+.sectionPrincipaleStyle {
+  @apply relative flex flex-row justify-center w-full text-white h-1/2;
+}
+.containerH1{
+  @apply p-8 bg-black/50
+}
+.imgSize {
+  @apply object-cover;
+}
+
+/**************************** Section Article ***************************/
+.sectionArticle {
+  @apply  flex justify-center w-full my-16 tablette:px-4 xl:flex-row lg:flex-col lg:items-center tablette:flex-col tablette:items-center h-5/6 shadow-backgroundDark hover:scale-105;
+}
+
+/*Bloc texte section*/
+.blocText {
+  @apply flex flex-col xl:pl-16 xl:items-start lg:items-center tablette:items-center;
+}
+
+.imgArticleSize {
+  @apply  mb-4;
+}
+
+/* bouton CTA */
+.btnCTA {
+  @apply px-8 py-4 ml-8 text-xl font-bold text-center tablette:ml-0 borderShadow dark:bg-orange bg-orange/70 text-textColor hover:dark:text-white dark:text-backgroundDark hover:bg-tertinaryDark/50 ;
+}
+.btnCTAnnonce {
+  @apply  w-1/2 mobile:w-full btnCTA;
+}
+.imgHidden {
+  @apply mobile:hidden;
+}
+.imgCircle{
+  @apply rounded-full;
+}
+/*bloc h1 + recherche*/
+.elementPrincipal {
+  @apply absolute z-10 flex flex-col items-center justify-between w-full h-full gap-4 text-background;
+}
+
+/* Titre */
+.h1Style {
+  @apply mb-8 text-4xl font-bold text-center mobile:text-2xl font-titleFont ;
+}
+
+.h2style {
+  @apply flex items-center justify-center w-full gap-4 mb-4 text-3xl font-bold leading-10 mobile:text-xl font-titleFont;
+}
+
+.h3style {
+  @apply flex flex-row w-full gap-4 mt-16 mb-4 text-xl font-bold font-titleFont ;
+}
+
+.h4style {
+  @apply w-full text-base font-bold font-titleFont ;
+}
+
+/********************** Form *********************/
+.formStyle {
+  @apply absolute z-20 flex flex-row mobile:flex-col  items-center py-4 justify-center w-[70%] tablette:w-[95%] gap-4 text-lg rounded-lg shadow bottom-5 bg-white/50 text-textColor;
+}
+
+/*Group Input*/
+.groupInputPrincipal {
+  @apply flex-row items-center gap-2 my-4 xl:flex lg:hidden tablette:hidden;
+}
+
+.groupInput {
+  @apply flex flex-row items-center gap-2 my-4;
+}
+
+.groupInputSearch {
+  @apply flex-row items-center gap-2 my-4 tablette:hidden lg:flex;
+}
+
+.groupInputPrincipalTablette {
+  @apply items-center justify-center gap-4 mobile:gap-0 xl:hidden xl:flex-row lg:flex lg:flex-col tablette:flex tablette:flex-col;
+}
+.selectStyle {
+  @apply bg-white text-textColor;
+}
+
+.optionStyle {
+  @apply bg-borderColorDark text-textColorDark hover:bg-gray-200;
+}
+/*Input*/
+.inputStyle {
+  @apply flex-1 p-2 border rounded shadow text-textColor shadow-backgroundDark dark:shadow-background border-borderColorDark dark:border-borderColor;
+}
+
+.margeStyle {
+  @apply mx-4;
+}
+
+@media (max-width: 1023px) {
+  .metier {
+    @apply w-3/4 truncate;
+  }
+}
+.truncate {
+  max-width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Tooltip styles */
+.tooltip {
+  position: relative;
+  cursor: pointer;
+}
+
+.tooltip::after {
+  content: attr(title);
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: 100%;
+  background-color: #333;
+  color: #fff;
+  padding: 5px;
+  border-radius: 3px;
+  white-space: nowrap;
+  display: none;
+  z-index: 100;
+}
+
+.tooltip:hover::after {
+  display: block;
+}
+.btnSearch {
+  @apply mx-4 lg:flex tablette:hidden size-20 border-borderColorDark dark:border-borderColor;
+}
+
+/*Label*/
+.labelStyle {
+  @apply flex justify-end w-full font-bold;
+}
+
+.labelStyleTablette {
+  @apply flex w-full mt-4 font-bold xl:justify-end lg:justify-center tablette:justify-center;
+}
+
+/* Ombre + bordure arrondi*/
+
+.borderShadow {
+  @apply transition-shadow border rounded shadow shadow-backgroundDark dark:shadow-background border-borderColorDark dark:border-borderColor hover:shadow-lg;
+}
+
+/************ Section Présentation ************************/
+.sectionPresentation {
+  @apply  mx-8 my-16 leading-10 break-words hover:scale-105;
+}
+
+/* paragraphe*/
+.paragrapheSection {
+  @apply px-8 mb-16 leading-10 break-words tablette:text-center;
+}
+
+/************* Avis utilisateurs *********************/ 
+.sectionAvis {
+  @apply flex flex-col pt-8 mx-8 mt-16 hover:scale-105;
+}
+
+.cards {
+  @apply flex justify-center gap-8 py-8 break-words xl:flex-row lg:flex-col lg:w-full lg:gap-4 tablette:flex-col tablette:w-full tablette:gap-4;
+}
+
+.card {
+  @apply flex flex-col items-center w-1/3 gap-4 p-8 my-16 tablette:my-4 styleElementscards borderShadow lg:w-full tablette:w-full;
+}
+
+/****************** footer ******************************/
+.footer {
+  @apply flex items-center justify-around gap-4 pb-4 mt-16 xl:flex-row lg:flex-col lg:gap-6 tablette:flex-col tablette:gap-6;
+}
+
+.elementFooterCenter {
+  @apply flex flex-col items-center justify-between gap-8 lg:order-4 tablette:order-4;
+}
+
+.elementFooter {
+  @apply flex flex-col items-start justify-between ;
+}
+
+.elementPagesAnnexe {
+  @apply gap-4 lg:order-2 tablette:order-2;
+}
+
+.elementAccessibilite {
+  @apply lg:order-3 tablette:order-3 mobile:items-center;
+}
+
+.elementReseaux {
+  @apply lg:order-1 tablette:order-1;
+}
+
+.elementFooterRow {
+  @apply flex flex-row flex-wrap items-start justify-between gap-8;
+}
+
+.lienFooter {
+  @apply p-1 hover:bg-black/10 dark:hover:bg-tertinary hover:rounded hover:scale-95 hover:text-black dark:hover:text-background styleColorText;
+}
+.lienFooterReseaux{
+  @apply p-1 hover:bg-black/10 dark:hover:bg-tertinary hover:rounded-full hover:scale-95
+}
+.lienFooterAccessibilite {
+  @apply flex flex-row gap-4 mobile:flex-col mobile:items-center;
+}
+
+/**** Profile *****/
+.containerProfil{
+  @apply container px-4 py-12 mx-auto sm:px-6 lg:px-8 bg-background dark:bg-backgroundDark;
+}
+.divInformation {
+  @apply flex flex-row w-full tablette:flex-col tablette:items-center sm:p-6 bg-background dark:bg-backgroundDark text-textColor dark:text-textColorDark;
+}
+.formModifierProfil{
+  @apply flex flex-col items-center gap-6 py-8 text-textColor dark:text-textColorDark bg-secondary dark:bg-secondaryDark borderShadow;
+}
+.labelProfil{
+  @apply block w-1/2 mb-1 text-sm font-bold text-textColor dark:text-textColorDark;
+}
+.imgProfil {
+  @apply w-24 h-24 borderShadow;
+}
+.divBtnProfil {
+  @apply w-full px-4 py-4 text-center bg-background dark:bg-backgroundDark sm:px-6;
+}
+/**** modification formulaire *****/
+.formulaireColonne {
+  @apply flex flex-col flex-wrap w-1/2 gap-4 my-4 align-middle mobile:w-full;
+}
+
+#modal-metier {
+  @apply max-w-[300px] whitespace-nowrap overflow-hidden text-ellipsis
+}
+
+.inputFormulaire {
+  @apply w-full p-2 border rounded shadow shadow-backgroundDark dark:shadow-background hover:bg-hoverColorDark text-textColor dark:hover:bg-hoverColor border-borderColorDark dark:border-borderColor;
+}
+.inputPhoto {
+  @apply w-full p-2 border rounded shadow shadow-backgroundDark dark:shadow-background hover:bg-hoverColorDark hover:text-textColorDark text-textColor bg-background dark:hover:bg-hoverColor border-borderColorDark dark:border-borderColor;
+}
+
+/* Div de la photo de profil */
+.divCompetence {
+  @apply flex flex-col items-start justify-start w-1/4 gap-4 px-1 pt-1 tablette:w-1/2 mobile:w-full;
+}
+
+.blocCompetence {
+  @apply flex items-center justify-between w-full gap-2 mb-8 lg:flex-row tablette:flex-wrap tablette:justify-center tablette:w-1/2;
+}
+.labelCompetences{
+  @apply text-sm font-bold text-textColor dark:text-textColorDark
+}
+.competences{
+  @apply flex items-center justify-between p-1 borderShadow styleElementscards;
+}
+.divPhoto {
+  @apply flex flex-row items-center justify-center w-1/4 gap-4 pt-4 mobile:w-1/2;
+}
+
+.divPhoto img {
+  @apply size-32 borderShadow;
+}
+
+.closeIcon {
+  @apply font-bold font-textFont text-red-500 pl-2
+}
+
+.groupRenseignement {
+  @apply w-full my-4 flex flex-row flex-wrap gap-4
+}
+.labelRenseignement{
+  @apply block mb-1 text-sm font-bold text-textColor dark:text-textColorDark
+}
+.btnValidate {
+  @apply flex justify-center w-full p-4 mt-3 text-base font-bold text-black bg-green-600 borderShadow hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 sm:mt-0 sm:w-auto sm:text-sm
+}
+
+.btnAnnuler {
+  @apply flex justify-center w-full p-4 mt-3 text-base font-bold text-backgroundDark bg-red-500 borderShadow hover:bg-red-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:w-auto sm:text-sm
+}
+
+.btnModifier {
+  @apply inline-flex justify-center my-4 p-4 text-sm font-bold text-textColor hover:text-hoverColorDark borderShadow bg-orange hover:bg-amber-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange
+}
+
+/***** annonce  *****/
+.containerFormModif{
+  @apply  fixed inset-0 z-50 flex items-center justify-center w-full h-full p-4 bg-black/75;
+}
+.formModifier {
+  @apply absolute inset-0 bg-gray-500 opacity-75;
+}
+.divFormModif{
+  @apply relative max-w-lg p-8 styleElementscards lg:w-1/2 tablette:w-screen tablette:max-w-[100vw] h-auto rounded shadow-lg borderShadow;
+}
+.transition-all {
+  transition: all 0.5s ease-in-out;
+}
+.containerCardAnnonces{
+  @apply container mx-auto mt-8 styleColorText styleColorBackground;
+}
+.hidden {
+  display: none;
+}
+
+.btnAdditional img {
+  transition: transform 0.5s;
+  --tw-bg-opacity: 1;
+  background-color: rgb(244 244 244 / var(--tw-bg-opacity)) /* #f4f4f4 */;
+}
+
+.btnAdditional {
+  @apply flex items-center justify-center gap-2 mb-4 ml-4;
+}
+
+.rotate-180 {
+  transform: rotate(180deg);
+}
+.containerAnnonces {
+  @apply w-full flex justify-center flex-row flex-wrap gap-4
+}
+
+.blocCards {
+  @apply  flex flex-col justify-between borderShadow xl:w-1/4 lg:w-1/3 tablette:w-[95%] p-4 text-center gap-4 styleElementscards;
+}
+
+.containerModal {
+  @apply fixed left-0 z-10 inset-0 w-full h-full bg-black/50  flex-col items-center justify-center 
+}
+
+.modalModificationAnnonce {
+  @apply relative flex justify-center items-center bg-background rounded-lg shadow-xl w-full max-w-lg borderShadow
+}
+
+.modalFormulaire {
+  @apply flex flex-col justify-center align-middle p-4
+}
+
+.fondModal {
+  @apply absolute inset-0 bg-gray-500 opacity-75 w-full h-full
+}
+
+.btnArchive {
+  @apply inline-flex justify-center my-4 p-4 text-sm font-bold text-textColor hover:text-white borderShadow bg-gray-300 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange
+}
+
+.groupBtn {
+  @apply flex flex-row flex-wrap items-center content-end justify-center gap-4 mt-4 align-middle h-1/2 ;
+}
+
+.groupAnnonce {
+  @apply flex flex-row flex-wrap gap-4;
+}
+
+.checkboxTypeDeContrat {
+  @apply  flex flex-row flex-wrap gap-4;
+}
+
+.labelRecherche {
+  @apply block text-sm font-bold text-textColor dark:text-textColorDark;
+}
+/***** recruteur dashboards *****/
+
+.containerDashboards{
+  @apply container p-4 mx-auto styleElements ;
+}
+
+/***** admin dashboard  *****/
+.h2Admin {
+  @apply flex justify-center items-center w-full gap-4 p-2 border-b-[0.01rem] border-black/25 text-xl font-bold leading-10 cursor-pointer hover:bg-hoverColorDark hover:text-textColorDark mobile:text-xl tablette:mt-0 tablette:justify-center tablette:items-center overflow-hidden; /* Ajoutez overflow-hidden si le contenu dépasse */
+}
+.blocAdmin {
+  @apply flex flex-row flex-wrap w-full tablette:flex-col;
+}
+.blocAdminAnnonces {
+  @apply flex flex-row items-center gap-4 mb-4 mobile:flex-col;
+}
+.adminCard {
+  @apply flex flex-col w-[30%] p-8 m-1 mt-4 mb-4 space-y-4 text-sm styleElementscards borderShadow tablette:w-[45%] mobile:w-full; 
+}
+.containerMenuAdmin {
+  @apply relative w-full max-w-full; 
+}
+.menuAdmin {
+  @apply sticky top-0 z-10 flex flex-row w-full max-w-full overflow-hidden tablette:flex-col borderShadow; 
+}
+.gestionAnnonce {
+  @apply flex flex-row flex-wrap items-center justify-center gap-4 px-2 mobile:flex-col; 
+}
+.containerAdminDashboard {
+  @apply container min-h-screen mx-auto my-8;
+}
+.annonceCard {
+  @apply flex flex-col items-center justify-between w-full max-w-xs gap-4 p-8 m-4 mx-auto space-y-4 overflow-hidden borderShadow styleElementscards; 
+}
+.containerInscription {
+  @apply flex flex-col items-center w-full max-w-md p-8 bg-white rounded-lg shadow-md;
+}
+.btnInscription{
+  @apply flex justify-center bg-gray-500 opacity-50 cursor-not-allowed btnModifier;
+}
+.passwordCritere{
+@apply mt-2 text-sm text-textColor dark:text-textColorDark;
+}
+.selectAdmin{
+  @apply block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm dark:text-textColor focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm;
+}
+/**** Notification ****/
+.notifications {
+  @apply relative p-4 rounded-lg shadow-md bg-secondary text-textColor borderShadow;
+}
+
+/**** Inscription ****/
+.groupInscription {
+  @apply flex flex-col items-start justify-center w-1/2 gap-2;
+}
+
+.labelInscription {
+  @apply flex justify-start w-full font-bold;
+}
+
+/**** Connexion ****/
+.demi {
+  @apply w-1/2 mt-4 mobile:w-3/4;
+}
+
+/**** Articles ****/
+.articleStyle {
+  @apply flex flex-col gap-2 mb-4
+}
+/**** Plan du site ****/
+.listeStyle {
+  @apply ml-6 list-disc list-inside
+}

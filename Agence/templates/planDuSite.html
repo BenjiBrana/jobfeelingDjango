@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %} Plan du Site - JobFeeling {% endblock %}
+{% block breadcrumb %}
+<li class="flex items-center">
+  <span class="text-gray-500">Plan du Site</span>
+</li>
+{% endblock %}
+
+{% block content %}
+<section class="sectionContainer">
+  <h1 class="h1Style">Plan du Site</h1>
+  <div class="flex flex-col w-full gap-4 mx-auto leading-relaxed lg:w-3/4">
+    <ul class="list-disc list-inside">
+      <li>
+        <a href="https://jobfeeling.branabenjamin.fr/" class="hover:underline">Accueil</a>
+      </li>
+      <li>
+        <a href="https://jobfeeling.branabenjamin.fr/annonces/" class="hover:underline">Annonces</a>
+      </li>
+      <li>
+        Authentification
+        <ul class="listeStyle">
+          <li>
+            <a href="https://jobfeeling.branabenjamin.fr/authentification/connexion/" class="hover:underline">Connexion</a>
+          </li>
+          <li>
+            <a href="https://jobfeeling.branabenjamin.fr/authentification/inscription/" class="hover:underline">Inscription</a>
+          </li>
+        </ul>
+      </li>
+      <li>
+        <a href="https://jobfeeling.branabenjamin.fr/article/" class="hover:underline">Articles</a>
+      </li>
+      <li>
+        <a href="https://jobfeeling.branabenjamin.fr/mentionsLegales/" class="hover:underline">Mentions Légales</a>
+      </li>
+      <li>
+        <a href="https://jobfeeling.branabenjamin.fr/confidentialite/" class="hover:underline">Politique de Confidentialité</a>
+      </li>
+      <li>
+        <a href="https://jobfeeling.branabenjamin.fr/accessibilite/" class="hover:underline">Accessibilité</a>
+      </li>
+      <li>
+        <a href="https://jobfeeling.branabenjamin.fr/planDuSite/" class="hover:underline">Plan du site</a>
+      </li>
+    </ul>
+  </div>
+  <img src="{% static 'images/plandusite.webp' %}" alt="Plan du site" title="Photo du plan du site" class=" borderShadow">
+</section>
+{% endblock %}

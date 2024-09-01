@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block title %} Accessibilité - JobFeeling {% endblock %}
+{% block breadcrumb %}
+<li class="flex items-center">
+  <span class="text-gray-500">Accessibilité</span>
+</li>
+{% endblock %}
+
+{% block content %}
+<section class="sectionContainer">
+  <h1 class="h1Style">Accessibilité</h1>
+  <div class="flex flex-col w-full gap-4 mx-auto leading-relaxed lg:w-3/4">
+    <p>
+      Chez JobFeeling, nous nous engageons à rendre notre site web accessible à tous. Nous travaillons constamment à améliorer l'accessibilité de notre site pour assurer une expérience utilisateur inclusive et diversifiée.
+    </p>
+
+    <h2 class="mt-6 text-2xl font-semibold font-titleFont">Mesures d'accessibilité en place</h2>
+    <ul class="pl-6 list-disc">
+      <li>
+        <strong>Compatibilité avec les lecteurs d'écran :</strong> Nous nous efforçons de rendre notre site compatible avec les lecteurs d'écran pour aider les utilisateurs malvoyants ou non-voyants.
+      </li>
+      <li>
+        <strong>Navigation au clavier :</strong> Notre site est conçu pour être navigable au clavier, permettant aux utilisateurs qui ne peuvent pas utiliser une souris ou un écran tactile de naviguer facilement sur le site.
+      </li>
+      <li>
+        <strong>Contraste des couleurs :</strong> Nous utilisons des couleurs contrastées pour aider les utilisateurs malvoyants ou ayant des problèmes de vision des couleurs à lire et à comprendre notre contenu.
+      </li>
+      <li>
+        <strong>Texte alternatif pour les images :</strong> Toutes les images sur notre site ont un texte alternatif pour aider les utilisateurs qui utilisent des lecteurs d'écran ou qui ont désactivé les images.
+      </li>
+    </ul>
+
+    <h2 class="mt-6 text-2xl font-semibold font-titleFont">Non-conformité actuelle</h2>
+    <p>
+      Nous sommes conscients que certaines parties de notre site ne sont pas encore entièrement accessibles. Nous travaillons activement à résoudre ces problèmes. Si vous rencontrez des problèmes d'accessibilité sur notre site, veuillez nous contacter.
+    </p>
+
+    <h2 class="mt-6 text-2xl font-semibold font-titleFont">Nous contacter</h2>
+    <p>
+      Si vous avez des questions ou des commentaires sur l'accessibilité de notre site, n'hésitez pas à nous contacter à <a href="mailto:contact@jobfeeling.fr" class="text-blue-500 hover:underline">contact@jobfeeling.fr</a>.
+    </p>
+  </div>
+</section>
+{% endblock %}

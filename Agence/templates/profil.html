@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %} Profil - JobFeeling {% endblock %}
+{% block breadcrumb %}
+<li class="flex items-center">
+  <span class="font-bold">Profil</span>
+</li>
+{% endblock %}
+
+{% block content %}
+<div class="containerProfil">
+  <h1 class="h1Style">Mon profil</h1>
+  <div id="profil-content">
+    {% include 'partials/profil_content.html' %}
+  </div>
+</div>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    function getCookie(name) {
+      let cookieValue = null;
+      if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+          const cookie = cookies[i].trim();
+          if (cookie.substring(0, name.length + 1) === (name + '=')) {
+            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+            break;
+          }
+        }
+      }
+      return cookieValue;
+    }
+
+    const csrftoken = getCookie('csrftoken');
+
+    document.body.addEventListener('htmx:configRequest', (event) => {
+      event.detail.headers['X-CSRFToken'] = csrftoken;
+    });
+
+    const photoInput = document.getElementById('photoInput');
+    const submitBtn = document.getElementById('submitBtn');
+    const errorDiv = document.getElementById('photo-error');
+
+    function validateImage() {
+      errorDiv.innerHTML = '';
+      const file = photoInput.files[0];
+      let valid = true;
+
+      if (file) {
+        if (file.size > 1 * 1024 * 1024) {
+          errorDiv.innerHTML = "La taille de l'image ne doit pas dépasser 1 Mo.";
+          valid = false;
+        }
+        const validImageFormats = ['image/jpeg', 'image/png', 'image/gif'];
+        if (!validImageFormats.includes(file.type)) {
+          errorDiv.innerHTML = "Le format de l'image doit être JPEG, PNG ou GIF.";
+          valid = false;
+        }
+      }
+
+      submitBtn.disabled = !valid;
+      return valid;
+    }
+
+    photoInput.addEventListener('change', validateImage);
+    submitBtn.disabled = !validateImage();
+  });
+
+  function switchToEditMode() {
+    document.getElementById("display-mode").classList.add("hidden");
+    document.getElementById("edit-mode").classList.remove("hidden");
+  }
+
+  function cancelEditMode() {
+    document.getElementById("edit-mode").classList.add("hidden");
+    document.getElementById("display-mode").classList.remove("hidden");
+  }
+</script>
+{% endblock %}

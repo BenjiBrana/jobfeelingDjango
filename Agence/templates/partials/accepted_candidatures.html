@@ -1,0 +1,16 @@
+<div>
+    <h3 class="mt-4 mb-2 text-lg font-bold">Candidatures acceptées</h3>
+    <div class="flex flex-row flex-wrap gap-4">
+        {% if accepted_candidatures %}
+            {% for candidature in accepted_candidatures %}
+            <div class="p-4 styleElementscards borderShadow">
+                <span class="text-lg font-bold">{{ candidature.user.get_full_name }}</span>
+                <p><strong>Date de postulation :</strong> {{ candidature.date_creation }}</p>
+                <p><strong>Statut :</strong> {{ candidature.etat }}</p>
+            </div>
+            {% endfor %}
+        {% else %}
+            <p>Aucune candidature acceptée.</p>
+        {% endif %}
+    </div>
+</div>

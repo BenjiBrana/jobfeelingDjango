@@ -1,0 +1,107 @@
+<!-- Template: annonces.html -->
+{% extends 'base.html' %}
+{% load static %}
+{% load custom_filters %}
+{% block title %}Annonces - JobFeeling{% endblock %}
+{% block breadcrumb %}
+<li class="flex items-center">
+  <span class="font-bold">Annonces</span>
+</li>
+{% endblock %}
+
+{% block content %}
+<div class="containerCardAnnonces">
+  <h1 class="h1Style margeStyle">
+    Liste des annonces
+  </h1>
+  <button type="button" id="additionalBtn" class="flex items-center btnAdditional tablette:block">
+    <span>Filtres</span>
+    <img src="{% static 'logo/logo_filtre.png' %}" alt="Icone action supplémentaire" class="w-6 h-6 ml-2 rounded-full imgFiltres borderShadow">
+  </button>
+  <!-- Formulaire de recherche -->
+  <form id="searchForm" method="GET" class="hidden mb-8 transition-all duration-500 margeStyle tablette:flex tablette:flex-col tablette:items-center" hx-get="{% url 'annonces' %}" hx-target="#annonces-container" hx-swap="innerHTML">
+    <div class="flex flex-row flex-wrap justify-center gap-4">
+      <div>
+        <label for="localisation" class="labelRecherche">Localisation :</label>
+        <input type="text" name="localisation" id="localisation" class="inputStyle" value="{{ form.localisation.value|default_if_none:'' }}">
+      </div>
+      <div class="flex flex-col items-center justify-center">
+        <label for="metier" class="labelRecherche">Métier :</label>
+        <select name="metier" id="metier" class="inputStyle metier">
+          {% for value, label in form.metier.field.choices %}
+            <option value="{{ value }}" {% if value == form.metier.value %}selected{% endif %} class="truncate tooltip" title="{{ label }}">{{ label }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div>
+        <label for="salaire_min" class="labelRecherche">Salaire minimum :</label>
+        <input type="number" name="salaire_min" id="salaire_min" class="inputStyle" value="{{ form.salaire_min.value|default_if_none:'' }}">
+      </div>
+      <div>
+        <label for="tri" class="labelRecherche">Trier par :</label>
+        <select name="tri" id="tri" class="inputStyle">
+          {% for value, label in form.tri.field.choices %}
+            <option value="{{ value }}" {% if value == form.tri.value %}selected{% endif %}>{{ label }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div>
+        <label for="type_contrat" class="labelRecherche">Type de contrat :</label>
+        <select name="type_contrat" id="type_contrat" class="inputStyle">
+          {% for value, label in form.type_contrat.field.choices %}
+            <option value="{{ value }}" {% if value in form.type_contrat.value %}selected{% endif %}>{{ label }}</option>
+          {% endfor %}
+        </select>
+      </div>
+    </div>
+    <div class="groupBtn">
+      <button type="submit" class=" btnModifier">Rechercher</button>
+      <button type="button" id="resetBtn" class="btnAnnuler margeStyle">Effacer</button>
+    </div>
+  </form>
+  <!-- Liste des annonces -->
+  <div id="annonces-container" class="containerAnnonces">
+    {% include 'annonces_list.html' %}
+  </div>
+</div>
+
+<script>
+  document.getElementById('resetBtn').addEventListener('click', function() {
+    const form = document.getElementById('searchForm');
+    form.reset();
+
+    // Reset select elements
+    document.getElementById('tri').selectedIndex = 0;
+    document.getElementById('metier').selectedIndex = 0;
+    const typeContratSelect = document.getElementById('type_contrat');
+    for (let i = 0; i < typeContratSelect.options.length; i++) {
+      typeContratSelect.options[i].selected = false;
+    }
+
+    // Trigger form submission to reload all annonces
+    htmx.ajax('GET', form.action, { target: '#annonces-container' });
+  });
+
+  // Rotate the button and toggle form visibility on click
+  document.getElementById('additionalBtn').addEventListener('click', function() {
+    const img = this.querySelector('.imgFiltres');
+    img.classList.toggle('rotate-180');
+
+    const form = document.getElementById('searchForm');
+    form.classList.toggle('hidden');
+  });
+
+  // Add tooltip to truncated text in the select dropdown
+  document.addEventListener('DOMContentLoaded', function() {
+    const metierSelect = document.getElementById('metier');
+    const options = metierSelect.options;
+
+    for (let i = 0; i < options.length; i++) {
+      if (options[i].text.length > 20) {
+        options[i].setAttribute('data-title', options[i].text);
+        options[i].textContent = options[i].text.slice(0, 20) + '...';
+      }
+    }
+  });
+</script>
+{% endblock %}

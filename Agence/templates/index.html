@@ -1,0 +1,176 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}JobFeeling - Votre job idéal est ici{% endblock %}
+
+
+{% block content %}
+    <section class="sectionPrincipaleStyle relative w-full h-[682px]">
+      <img class="imgSize borderShadow" src="/static/images/imgPrincipale.webp" alt="Image principal" width="800" height="600">
+      <div class="absolute inset-0 flex items-center justify-center h-full">
+        <div class="containerH1 borderShadow">
+          <h1 class="text-4xl font-bold text-center">
+            JobFeeling
+          </h1>
+          <span class="block pt-4 text-xl font-bold text-center">
+            Trouverez le job qui éveillera votre passion
+          </span>
+        </div>
+      </div>
+    </section>
+    <section class="sectionPresentation">
+      <div class="derniereAnnonce">
+        <h2 class="h2style">Dernière annonces</h2>
+        <div class="containerBlocs">          
+        {% for annonce in dernieres_annonces %}
+          <div class="blocCards">
+            <h2 class="text-lg font-medium text-center text-tertinary font-titleFont">{{ annonce.metier.nom_metier }}</h2>
+            <div class="flex flex-row items-center justify-center gap-4 mb-4">
+              {% if annonce.recruiter.profile.photo %}
+                <img src="{{ annonce.recruiter.profile.photo.url }}" alt="Photo de l'entreprise" class="w-12 h-12 mr-2 rounded-full" width="48" height="48">
+              {% endif %}
+              <span class="text-lg font-medium">{{ annonce.recruiter.profile.nom_entreprise }}</span>
+            </div>
+            <p class="flex justify-center leading-8 text-gray-700 font-textFont">{{ annonce.description }}</p>
+            <div class="flex flex-row flex-wrap justify-center gap-4">
+              <span>{{ annonce.lieu|capfirst }}</span>
+              <span>{{ annonce.type_contrat }}</span>
+              <span>{{ annonce.salaire }} €</span>
+            </div>
+            <div class="flex flex-row flex-wrap items-center justify-center gap-4">
+              <span>{{ annonce.date_creation }}</span>
+              {% if user.is_authenticated and user.profile.user_type == 'candidate' %}
+                {% if not request.user == annonce.recruiter %}
+                  {% if candidatures.annonce.id == 'déjà postulé' %}
+                    <span class="px-4 py-2 mt-4 text-gray-500 rounded-md btnValidate">Déjà postulé</span>
+                  {% else %}
+                    <a href="#" 
+                      hx-post="{% url 'postuler' annonce.id %}" 
+                      hx-target="this" 
+                      hx-swap="outerHTML" 
+                      hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
+                      class="px-4 py-2 mt-4 text-white rounded-md btnModifier">Postuler</a>
+                  {% endif %}
+                {% endif %}
+              {% endif %}
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+        <div class="flex justify-center w-full">
+          <a class="btnCTAnnonce" href="{% url 'annonces' %}">Voir toutes les annonces</a>
+        </div>
+    </div>
+      <h2 class="flex-col text-center h2style">
+        <span>Bienvenue sur votre passerelle vers une carrière épanouissante.</span>
+        <span>Votre plateforme de recrutement en ligne de confiance.</span>
+      </h2>
+      <p class="flex flex-col mt-8">
+        <span>Chez JobFeeling, nous croyons que chaque individu mérite de trouver le
+        <strong>job</strong> qui lui correspond
+        parfaitement. 
+        </span>
+        <span>C'est pourquoi nous avons créé une plateforme innovante
+        et conviviale qui connecte les candidats aux employeurs de manière
+        efficace et transparente.</span>
+      </p>
+      <p class="mt-8">
+        Notre mission est simple :
+        <strong>faciliter votre recherche d'emploi,</strong>
+        que vous soyez à la recherche de votre premier emploi, d'une nouvelle
+        opportunité de carrière ou d'un changement de cap, JobFeeling est là
+        pour vous aider à chaque étape du processus.
+      </p>
+      <p class="flex flex-col mt-8">
+        <span>Nous comprenons que le recrutement n'est pas seulement une question de
+        compétences, mais aussi de
+        <strong>"feeling".</strong></span> 
+        <span>De ce fait, nous
+        nous efforçons de créer des correspondances basées non seulement sur
+        les qualifications et l'expérience, mais aussi sur la culture
+        d'entreprise et les valeurs personnelles.</span>
+      </p>
+      <p class="mt-8">
+        Avec une vaste gamme d'
+        <strong>offres d'emploi</strong> dans divers
+        secteurs et une interface utilisateur intuitive, JobFeeling rend la
+        recherche d'emploi plus facile que jamais. Rejoignez-nous aujourd'hui
+        et commencez votre voyage vers le job de vos rêves.
+      </p>
+    </section>
+    <section class="sectionArticle">  
+      <div class="flex w-full">
+        <img class="borderShadow imgArticleSize"
+          src="{% static 'images/imgArticle.webp' %}"
+          alt="Image de l'article"
+          title="Image de l'article du jour"
+          width="400"
+          height="400"
+        />
+      </div>
+      <div class="blocText">
+        <h2 class="text-center h2style">
+            Notre conseil du jour
+          <img class="imgHidden"
+            src="{% static 'logo/logo_conseil.webp' %}"
+            alt="Logo conseil"
+            title="Logo de conseil"
+            width="30"
+            height="30"
+          />
+        </h2>
+        <h3 class="flex flex-row items-center gap-4 text-center h3Style">
+          <img  class="imgHidden imgCircle" 
+          src="{% static 'logo/logo_idee.svg' %}"
+          alt="Logo idée"
+          title="Logo pour donner une indication"
+          width="30"
+          height="30"
+          />
+          Comment faire bonne impression en entretien ?
+        </h3>
+        
+        <p class="paragrapheSection">
+          Pour faire bonne impression en entretien, commencez par une
+          préparation minutieuse en recherchant l'entreprise et en
+          anticipant les questions possibles. <br />
+          Soyez authentique, confiant et professionnel lors de l'entretien,
+          en mettant en valeur vos compétences et vos réalisations
+          pertinentes. <br />
+          Enfin, n'oubliez pas de poser des questions pertinentes à votre
+          tour pour montrer votre intérêt et votre engagement envers le
+          poste et l'entreprise. . . .
+        </p>
+        <div class="flex justify-center w-full">
+        <a class="btnCTA" href="{% url 'article' %}">
+          Cliquer pour voir la suite
+        </a>
+      </div>
+      </div>
+    </section>
+    <section class="sectionAvis">
+      <h2 class="h2style">
+        Avis des utilisateurs
+        <img class="imgHidden"
+          src="{% static '/logo/logo_conseil.webp' %}"
+          alt="Logo conseil"
+          title="Logo de conseil"
+          width="30"
+          height="30"
+        />
+      </h2>
+      <div class="cards ">
+        <!-- Commentaire 1 -->
+        <div class="card">
+          <h3 class="font-bold text-center h3Style">Trouver un emploi n'a jamais été aussi simple !</h3>
+          <p class="italic">Jeanne - Développeuse Web</p>
+          <p class="leading-8">Grâce à JobFeeling, j'ai pu trouver le poste parfait qui correspondait à mes compétences et à mes aspirations. Le processus a été fluide et efficace. Je recommande vivement JobFeeling à tous ceux qui cherchent à faire progresser leur carrière.</p>
+        </div>
+        <!-- Commentaire 2 -->
+        <div class="card">
+          <h3 class="font-bold text-center h3Style">JobFeeling a transformé ma recherche d'emploi.</h3>
+          <p class="italic">Pierre - Chef de Projet</p>
+          <p class="leading-8">Leur plateforme est facile à utiliser et j'ai été impressionné par la qualité des offres d'emploi disponibles. J'ai trouvé un emploi qui me passionne vraiment grâce à JobFeeling.</p>
+        </div>
+      </div>
+    </section>
+{% endblock %}

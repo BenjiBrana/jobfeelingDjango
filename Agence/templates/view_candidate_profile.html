@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Profil de {{ user.get_full_name }}{% endblock %}
+{% block breadcrumb %}
+<li class="flex items-center">
+  <span class="font-bold">Profil Candidat</span>
+</li>
+{% endblock %}
+{% block content %}
+<div class="container mx-auto my-8 styleElementscards">
+  <h1 class="h1Style">{{ user.get_full_name }}</h1>
+  <div class="mt-4">
+    <a href="{% url 'voir_candidature' annonce_id %}" class="btnArchive">Retourner aux candidatures</a>
+  </div>
+  <div class="flex flex-col gap-4 p-4 rounded-lg shadow-md">
+    <div class="flex flex-row items-center gap-4">
+        <div class="imgProfil">
+            {% if profile.photo %}
+            <img src="{{ profile.photo.url }}" alt="Photo de profil" class="object-cover w-full h-full " />
+            {% else %}
+            <img src="{% static 'profile_pics/default_avatar.png' %}" alt="Photo de profil par défaut" class="object-cover w-full h-full " />
+            {% endif %}
+          </div>
+      <div>
+        <h2 class="text-lg font-bold">{{ user.get_full_name }}</h2>
+        <p>{{ user.email }}</p>
+      </div>
+    </div>
+    <div class="flex flex-col gap-2">
+      <h3 class="font-bold text-md">Informations :</h3>
+      <p><strong>Ville :</strong> {{ profile.ville|default:"Non renseigné" }}</p>
+      <p><strong>Métier :</strong> {{ profile.metier|default:"Non renseigné" }}</p>
+    </div>
+    <div class="flex flex-col gap-2">
+      <h3 class="font-bold text-md">Compétences :</h3>
+      <ul class="flex flex-wrap gap-2">
+        {% for competence in profile.competences.all %}
+        <li class="px-2 py-1 text-white bg-blue-500 rounded">{{ competence.name }}</li>
+        {% empty %}
+        <p>Aucune compétence renseignée.</p>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+  
+</div>
+{% endblock %}

@@ -1,0 +1,202 @@
+{% load static %}
+
+<div id="profil-content-inner" class="overflow-hidden shadow sm:rounded-md bg-background dark:bg-backgroundDark">
+  <div id="display-mode">
+    <div class="divInformation">
+      <div class="divPhoto">
+        {% if user.profile.photo %}
+        <img src="{{ user.profile.photo.url }}" alt="Photo de profil" />
+        {% else %}
+        <img src="{% static 'profile_pics/default_avatar.png' %}" alt="Photo de profil par défaut" />
+        {% endif %}
+      </div>
+      <div class="grid flex-1 grid-cols-6 gap-6">
+        <div class="groupRenseignement">
+          <label for="first_name" class="labelRenseignement">Prénom :</label>
+          <span id="first_name_display">{{ user.first_name|capfirst }}</span>
+        </div>
+        <div class="groupRenseignement">
+          <label for="last_name" class="labelRenseignement">Nom :</label>
+          <span id="last_name_display" class="block p-2 mt-1 text-sm text-gray-500 rounded">{{ user.last_name|capfirst }}</span>
+        </div>
+        <div class="groupRenseignement">
+          <label for="email_address" class="labelRenseignement">Email :</label>
+          <span id="email_display" class="block p-2 mt-1 text-sm text-gray-500 rounded">{{ user.email }}</span>
+        </div>
+        <div class="groupRenseignement">
+          <label for="city" class="labelRenseignement">Ville :</label>
+          <span id="ville_display" class="block p-2 mt-1 text-sm text-gray-500 rounded">{{ user.profile.ville|default:"non renseigné"|capfirst }}</span>
+        </div>
+        <div class="groupRenseignement">
+          <label for="job" class="labelRenseignement">Métier :</label>
+          <span id="metier_display" class="block p-2 mt-1 text-sm text-gray-500 rounded">{{ user.profile.metier.nom_metier|default:"non renseigné"|capfirst }}</span>
+        </div>
+        {% if user.profile.user_type == 'recruiter' %}
+        <div class="groupRenseignement">
+          <label for="nom_entreprise" class="labelRenseignement">Nom de l'entreprise :</label>
+          <span id="nom_entreprise_display" class="block p-2 mt-1 text-sm text-gray-500 rounded">{{ user.profile.nom_entreprise|default:"non renseigné" }}</span>
+        </div>
+        <div class="groupRenseignement">
+          <label for="numero_siret" class="labelRenseignement">Numéro de SIRET :</label>
+          <span id="numero_siret_display" class="block p-2 mt-1 text-sm text-gray-500 rounded">{{ user.profile.numero_siret|default:"non renseigné" }}</span>
+        </div>
+        {% endif %}
+        <div class="groupRenseignement">
+          <label for="description" class="labelRenseignement">Description :</label>
+          <span id="description_display" class="block p-2 mt-1 text-sm text-gray-500 rounded">{{ user.profile.description|default:"non renseigné"|capfirst }}</span>
+        </div>
+      </div>
+      <div class="divCompetence">
+        <form class="flex flex-col items-center justify-center w-full" method="post" action="{% url 'add_competence' %}">
+          <div class="blocCompetence">
+            <label for="competences" class="labelCompetences">Compétences :</label>
+            <button class="btnValidate" type="submit">Ajouter</button>
+          </div>
+          {% csrf_token %}
+          <input class="inputStyle w-[80%]" type="text"id="competences" name="competence" placeholder="Ajouter une compétence" />
+        </form>
+        <ul class="flex flex-wrap justify-center w-full gap-4">
+          {% for competence in user.profile.competences.all %}
+          <li class="competences">
+            {{ competence.name }}
+            <form method="post" action="{% url 'remove_competence' competence.id %}" style="display: inline">
+              {% csrf_token %}
+              <button class="closeIcon" type="submit">X</button>
+            </form>
+          </li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+    <div class="divBtnProfil">
+      <button type="button" class="btnModifier" onclick="switchToEditMode()">Modifier</button>
+    </div>
+  </div>
+
+  <div id="edit-mode" class="hidden">
+    <form class="formModifierProfil" method="post" enctype="multipart/form-data" action="{% url 'profil' %}">
+      {% csrf_token %}
+      <div class="formulaireColonne">
+        <label for="ville" class="labelProfil">Ville :</label>
+        <input type="text" name="ville" id="ville" value="{{ user.profile.ville }}" class="inputFormulaire" />
+        {% if form.ville.errors %}
+            <div class="error">{{ form.ville.errors }}</div>
+        {% endif %}
+      </div>
+      <div class="formulaireColonne">
+        <label for="metier" class="labelProfil">Métier :</label>
+        <select name="metier" id="metier" class="inputStyle selectStyle metier">
+          {% for metier in metiers %}
+              <option value="{{ metier.id }}" {% if metier.id == form.metier.value %}selected{% endif %}>
+                  {{ metier.nom_metier }}
+              </option>
+          {% endfor %}
+      </select>
+        {% if form.metier.errors %}
+            <div class="error">{{ form.metier.errors }}</div>
+        {% endif %}
+      </div>
+      <div class="formulaireColonne">
+        <label for="description" class="labelProfil">Description :</label>
+        <textarea name="description" id="description" rows="4" class="inputFormulaire">{{ user.profile.description }}</textarea>
+        {% if form.description.errors %}
+            <div class="error">{{ form.description.errors }}</div>
+        {% endif %}
+      </div>
+      <div class="formulaireColonne">
+        <label for="photo_profil" class="labelProfil">Photo de profil :</label>
+        <input type="file" id="photo_profil" name="photo" class="inputPhoto" id="photoInput" />
+        <div id="photo-error" class="error" style="color: red;"></div>
+        {% if form.photo.errors %}
+            <div class="error">{{ form.photo.errors }}</div>
+        {% endif %}
+      </div>
+      {% if user.profile.user_type == 'recruiter' %}
+      <div class="formulaireColonne">
+        <label for="nom_entreprise" class="labelProfil">Nom de l'entreprise :</label>
+        <input type="text" id="nom_entreprise" name="nom_entreprise" value="{{ user.profile.nom_entreprise }}" class="inputFormulaire" />
+        {% if form.nom_entreprise.errors %}
+            <div class="error">{{ form.nom_entreprise.errors }}</div>
+        {% endif %}
+      </div>
+      <div class="formulaireColonne">
+        <label for="numero_siret" class="labelProfil">Numéro de SIRET :</label>
+        <input type="text" id="numero_siret" name="numero_siret" value="{{ user.profile.numero_siret }}" class="inputFormulaire" />
+        {% if form.numero_siret.errors %}
+            <div class="error">{{ form.numero_siret.errors }}</div>
+        {% endif %}
+      </div>
+      {% endif %}
+      <div class="groupBtn">
+        <button class="btnValidate" type="submit" id="submitBtn">Mettre à jour</button>
+        <button class="btnAnnuler" type="button" onclick="cancelEditMode()">Annuler</button>
+      </div>
+    </form>
+  </div>
+</div>
+<script>
+  // Switch to edit mode
+  function switchToEditMode() {
+    document.getElementById('display-mode').classList.add('hidden');
+    document.getElementById('edit-mode').classList.remove('hidden');
+  }
+
+  // Cancel edit mode
+  function cancelEditMode() {
+    document.getElementById('display-mode').classList.remove('hidden');
+    document.getElementById('edit-mode').classList.add('hidden');
+  }
+
+  // Function to handle AJAX form submissions
+  document.addEventListener('DOMContentLoaded', function() {
+    const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+    // Handle form submissions for delete competence
+    document.querySelectorAll('.delete-user-form').forEach(form => {
+      form.addEventListener('submit', function(event) {
+        event.preventDefault();
+        const userId = this.dataset.userId;
+
+        fetch(`/delete_user/${userId}/`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'X-CSRFToken': csrfToken,
+          },
+          body: new URLSearchParams(new FormData(this)),
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            document.getElementById(`user-card-${userId}`).remove();
+            showMessage(data.message_html, 'success');
+          } else {
+            console.error(data.errors);
+          }
+        })
+        .catch(error => console.error('Error:', error));
+      });
+    });
+
+    // Show message
+    function showMessage(message, type) {
+      const messageContainer = document.getElementById('message-container');
+      messageContainer.innerHTML = message;
+      messageContainer.classList.remove('hidden');
+      setTimeout(() => {
+        messageContainer.classList.add('hidden');
+      }, 5000);
+    }
+
+    // Add tooltip to truncated text in the select dropdown
+    const metierSelect = document.getElementById('metier');
+    const options = metierSelect.options;
+
+    for (let i = 0; i < options.length; i++) {
+      options[i].title = options[i].text;
+      if (options[i].text.length > 20) {
+        options[i].textContent = options[i].text.slice(0, 20) + '...';
+      }
+    }
+  });
+</script>

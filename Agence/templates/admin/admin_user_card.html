@@ -1,0 +1,30 @@
+{% if user.profile.user_type != 'superadmin' %}
+    {% if request.user.profile.user_type == 'superadmin' or user.profile.user_type != 'admin' %}
+    <div class="adminCard" id="user-card-{{ user.id }}">
+        <div class="user-info">
+            <span class="font-bold">{{ user.get_full_name }}</span>
+            <p>{{ user.email }}</p>
+            <p>{{ user.profile.get_user_type_display }}</p>
+        </div>
+        <form class="mt-2 change-status-form formModifUser " data-user-id="{{ user.id }}">
+            {% csrf_token %}
+            <input type="hidden" name="user_id" value="{{ user.id }}">
+            <select name="user_type" class="selectAdmin">
+                <option value="candidate" {% if user.profile.user_type == 'candidate' %}selected{% endif %}>Candidat</option>
+                <option value="recruiter" {% if user.profile.user_type == 'recruiter' %}selected{% endif %}>Recruteur</option>
+                {% if request.user.profile.user_type == 'superadmin' %}
+                    <option value="admin" {% if user.profile.user_type == 'admin' %}selected{% endif %}>Administrateur</option>
+                {% endif %}
+            </select>
+            <div class="flex justify-center">
+                <button type="submit" class="btnArchive">Changer le statut</button>
+            </div>    
+        </form>
+        <form class="flex justify-center mt-2 delete-user-form" data-user-id="{{ user.id }}">
+            {% csrf_token %}
+            <button type="submit" class="btnAnnuler">Supprimer</button>
+        </form>
+    </div>
+    
+    {% endif %}
+{% endif %}

@@ -1,0 +1,47 @@
+{% load custom_filters %}
+{% for annonce in annonces %}
+<div class="blocCards">
+  <h2 class="text-lg font-medium text-center text-tertinary font-titleFont">{{ annonce.metier.nom_metier }}</h2>
+  <div class="flex flex-row items-center justify-center gap-4 mb-4">
+    {% if annonce.recruiter.profile.photo %}
+      <img src="{{ annonce.recruiter.profile.photo.url }}" alt="Photo de l'entreprise" class="w-12 h-12 mr-2 rounded-full">
+    {% endif %}
+    <span class="text-lg font-medium">{{ annonce.recruiter.profile.nom_entreprise }}</span>
+  </div>
+  <p class="flex justify-center leading-8 text-gray-700 font-textFont">{{ annonce.description }}</p>
+  <div class="flex flex-row flex-wrap justify-center gap-4">
+    <span>{{ annonce.lieu|capfirst }}</span>
+    <span>{{ annonce.type_contrat }}</span>
+    <span>{{ annonce.salaire }} €</span>
+  </div>
+  <div class="flex flex-row flex-wrap items-center justify-center gap-4">
+    <span>{{ annonce.date_creation }}</span>
+    {% if user.is_authenticated and user.profile.user_type == 'candidate' %}
+      {% if not request.user == annonce.recruiter %}
+        {% with candidature_etat=user_candidatures|get_item:annonce.id %}
+          {% if candidature_etat == 'refusee' %}
+            <a href="#" 
+               hx-post="{% url 'postuler' annonce.id %}" 
+               hx-target="this" 
+               hx-swap="outerHTML" 
+               hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
+               class="px-4 py-2 mt-4 text-white rounded-md btnModifier">Postuler à nouveau</a>
+          {% elif candidature_etat %}
+            <span class="px-4 py-2 mt-4 text-gray-500 rounded-md btnValidate">Déjà postulé</span>
+          {% else %}
+            <a href="#" 
+               hx-post="{% url 'postuler' annonce.id %}" 
+               hx-target="this" 
+               hx-swap="outerHTML" 
+               hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
+               class="px-4 py-2 mt-4 text-white rounded-md btnModifier">Postuler</a>
+          {% endif %}
+        {% endwith %}
+      {% endif %}
+    {% endif %}
+  </div>
+</div>
+{% endfor %}
+{% if annonces|length == 0 %}
+<p class="text-center text-gray-500">Aucune annonce !!</p>
+{% endif %}

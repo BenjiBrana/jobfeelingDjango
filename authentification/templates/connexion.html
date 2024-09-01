@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Connexion{% endblock %}
+{% block breadcrumb %}
+<li class="flex items-center">
+    <span class="text-gray-500">Connexion</span>
+</li>
+{% endblock %}
+{% block content %}
+<div class="flex flex-col items-center w-full p-8 rounded-lg shadow-md">
+    <h1 class="pt-4 h1Style">Connexion</h1>
+    
+    {% if messages %}
+    <div class="relative w-full mb-4">
+        {% for message in messages %}
+        <div class="messageError alert-message">
+            {{ message }}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    
+    <form class="demi" method="POST" action="{% url 'connexion' %}">
+        {% csrf_token %}
+        <div class="flex flex-col gap-2 mb-4">
+            <label for="email" class="labelInscription">Email:</label>
+            <input type="text" id="email" name="email" required
+                   class="inputFormulaire">
+        </div>
+        <div class="flex flex-col gap-2 mb-6">
+            <label for="password" class="labelInscription">Mot de passe:</label>
+            <input type="password" id="password" name="password" required
+            class="inputFormulaire">
+        </div>
+        <div class="flex items-center justify-center gap-4">
+            <button type="submit" class="btnModifier">
+                Se connecter
+            </button>
+        </div>
+    </form>
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const alertMessages = document.querySelectorAll('.alert-message');
+        alertMessages.forEach(function(message) {
+            setTimeout(function() {
+                message.style.transition = 'opacity 0.5s ease';
+                message.style.opacity = '0';
+                setTimeout(function() {
+                    message.remove();
+                }, 500); 
+            }, 5000);
+        });
+    });
+</script>
+
+{% endblock %}

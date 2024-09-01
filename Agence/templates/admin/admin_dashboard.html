@@ -1,0 +1,203 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Tableau de bord Administrateur{% endblock %}
+{% block breadcrumb %}
+<li class="flex items-center">
+  <span class="font-bold">Dashboard Admin</span>
+</li>
+{% endblock %}
+{% block content %}
+<div class="containerAdminDashboard">
+    <h1 class="h1Style">Tableau de bord Administrateur</h1>
+    <div id="message-container"></div> 
+    <div class="blocAdmin">
+        <div class="w-full containerMenuAdmin">
+            <div class="w-full menuAdmin">
+                <h2 class="h2Admin toggle-section" data-target="annonce-management">Gérer les annonces</h2>
+                <h2 class="h2Admin toggle-section" data-target="user-management">Gérer les utilisateurs</h2>
+            </div>
+        </div>                      
+        <div class="flex flex-col flex-1">
+            <div id="annonce-management" class="pt-4 section-content">
+                <div class="flex flex-col flex-wrap items-center gap-2">
+                    <div class="blocAdminAnnonces">
+                        <a href="{% url 'admin_dashboard' %}?status=published" class="text-black btnValidate">Annonces publiées</a>
+                        <a href="{% url 'admin_dashboard' %}?status=pending" class="btnModifier">Annonces en attente</a>
+                    </div>
+                    <div class="gestionAnnonce">
+                        {% if annonces %}
+                            {% for annonce in annonces %}
+                            <div class="annonceCard">
+                                {% if annonce.recruiter.profile.photo %}
+                                    <img src="{{ annonce.recruiter.profile.photo.url }}" alt="Photo de l'entreprise" class="w-12 h-12 mr-2 rounded-full">
+                                {% else %}
+                                    <img src="{% static 'profile_pics/default_avatar.png' %}" alt="Photo de l'entreprise" class="w-12 h-12 mr-2 rounded-full">
+                                {% endif %}
+                                <h3 class="text-lg font-bold font-titleFont">{{ annonce.recruiter.profile.nom_entreprise|capfirst }}</h3>
+                                <p>{{ annonce.metier.nom_metier|capfirst }}</p>
+                                <p class="break-words">{{ annonce.description|capfirst }}</p>
+                                <p>{{ annonce.date_creation }}</p>
+                                <p>{{ annonce.lieu|capfirst }}</p>
+                                <p>{{ annonce.type_contrat }}</p>
+                                <p>{{ annonce.salaire }} €</p>
+                                {% if annonce.status == 'pending' %}
+                                <form hx-post="{% url 'validate_annonce' annonce.id %}" hx-target="this" hx-swap="outerHTML" class="mt-2">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="action" value="approve">
+                                    <button type="submit" class="btnValidate">Approuver</button>
+                                </form>
+                                <form hx-post="{% url 'validate_annonce' annonce.id %}" hx-target="this" hx-swap="outerHTML" class="flex flex-col items-center gap-2 mt-2 flex-column">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="action" value="refuse">
+                                    <button type="submit" class="btnAnnuler">Refuser</button>
+                                </form>
+                                {% endif %}
+                            </div>
+                            {% endfor %}
+                        {% else %}
+                            <div class="p-4 bg-white rounded-lg shadow-md">
+                                <h3 class="text-lg font-bold font-titleFont">Aucune annonce !!</h3>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>    
+            </div>
+            <div id="user-management" class="pt-4 section-content" style="display: none;">
+                <div id="user-management-container" class="flex flex-row flex-wrap justify-center gap-2">
+                    {% for user in users %}
+                        {% include 'admin/admin_user_card.html' %}
+                    {% endfor %}
+                </div>
+            </div>   
+        </div> 
+    </div>
+</div>
+
+<div id="success-message" class="fixed bottom-0 left-0 right-0 hidden p-4 mb-4 ml-4 mr-4 font-bold text-green-700 bg-green-100 border border-green-400 rounded"></div>
+
+{% endblock %}
+
+{% block script %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Fonction pour obtenir le token CSRF
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        // Configure le token CSRF pour les requêtes fetch
+        const csrftoken = getCookie('csrftoken');
+
+        // Gestion du clic sur les sections toggle
+        const toggles = document.querySelectorAll('.toggle-section');
+        toggles.forEach(toggle => {
+            toggle.addEventListener('click', function() {
+                const targetId = this.getAttribute('data-target');
+                const target = document.getElementById(targetId);
+
+                // Fermer toutes les sections
+                const sections = document.querySelectorAll('.section-content');
+                sections.forEach(section => {
+                    if (section.id !== targetId) {
+                        section.style.display = 'none';
+                    }
+                });
+
+                // Basculer la section cliquée
+                target.style.display = (target.style.display === 'none' || target.style.display === '') ? 'block' : 'none';
+            });
+        });
+
+        // Gestion du formulaire de changement de statut avec JavaScript natif
+        document.querySelectorAll('.change-status-form').forEach(form => {
+            form.addEventListener('submit', function(event) {
+                event.preventDefault();
+                const formData = new FormData(form);
+                const userId = form.dataset.userId;
+
+                fetch('{% url "admin_dashboard" %}', {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': csrftoken,
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    const card = document.querySelector(`#user-card-${userId}`);
+                    const parser = new DOMParser();
+                    const userInfoDoc = parser.parseFromString(data.user_html, 'text/html');
+                    const userInfo = userInfoDoc.querySelector('.user-info');
+                    card.querySelector('.user-info').replaceWith(userInfo);
+
+                    const messageContainer = document.getElementById('message-container');
+                    messageContainer.innerHTML = data.message_html;
+                    messageContainer.classList.remove('hidden');
+                    setTimeout(() => {
+                        messageContainer.classList.add('hidden');
+                    }, 5000);
+                })
+                .catch(error => {
+                    console.error("Une erreur s'est produite : " + error);
+                });
+            });
+        });
+
+        // Gestion du formulaire de suppression d'utilisateur avec JavaScript natif
+        document.querySelectorAll('.delete-user-form').forEach(form => {
+            form.addEventListener('submit', function(event) {
+                event.preventDefault();
+                const userId = form.dataset.userId;
+                if (confirm("Êtes-vous sûr de vouloir supprimer cet utilisateur ?")) {
+                    fetch(`{% url "delete_user" 0 %}`.replace('0', userId), {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRFToken': csrftoken,
+                            'X-Requested-With': 'XMLHttpRequest'
+                        },
+                        body: new URLSearchParams(new FormData(form))
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        document.getElementById(`user-card-${userId}`).remove();
+                        const messageContainer = document.getElementById('message-container');
+                        messageContainer.innerHTML = data.message_html;
+                        messageContainer.classList.remove('hidden');
+                        setTimeout(() => {
+                            messageContainer.classList.add('hidden');
+                        }, 5000);
+                    })
+                    .catch(error => {
+                        console.error("Une erreur s'est produite : " + error);
+                    });
+                }
+            });
+        });
+
+        // Code du bouton burger
+        const menuButton = document.getElementById('menuButton');
+        const closeButton = document.getElementById('closeButton');
+        const menuBurger = document.getElementById('menuBurger');
+        if (menuButton && closeButton && menuBurger) { // Vérifiez que les éléments existent
+            menuButton.addEventListener('click', function () {
+                menuBurger.classList.toggle('hidden');
+            });
+            closeButton.addEventListener('click', function () {
+                menuBurger.classList.add('hidden');
+            });
+        }
+    });
+</script>
+{% endblock script %}
