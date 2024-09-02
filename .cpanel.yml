@@ -1,0 +1,22 @@
+---
+deployment:
+  tasks:
+    - export DEPLOYS_DIR=$HOME/deployments
+    - export APP_DIR=$HOME/repositories/jobfeelingDjango  
+    - export VIRTUALENV=$HOME/virtualenvs/django_env
+
+    - mkdir -p $DEPLOYS_DIR
+    - if [ ! -d $VIRTUALENV ]; then python3.8 -m venv $VIRTUALENV; fi
+    - source $VIRTUALENV/bin/activate
+    - pip install -U pip setuptools wheel
+    - pip install -r $APP_DIR/requirements.txt
+
+    - python $APP_DIR/manage.py migrate --noinput
+
+    - python $APP_DIR/manage.py collectstatic --noinput
+
+  pre_deploy:
+    - echo "Préparation du déploiement..."
+
+  post_deploy:
+    - echo "Déploiement terminé."
