@@ -43,6 +43,9 @@
                 <ul id="menu" class="flex items-end">
                     {% if user.is_authenticated %}
                         <li class="itemMenu fade-out">
+                            <a class="p-4" href="{% url 'index' %}" tabindex="0">Accueil</a>
+                        </li>
+                        <li class="itemMenu fade-out">
                             <a class="p-4" href="{% url 'annonces' %}" tabindex="0">Annonces</a>
                         </li>
                         <li class="itemMenu fade-out">
@@ -61,6 +64,9 @@
                           <a class="p-4" href="{% url 'deconnexion' %}" tabindex="0">Déconnexion</a>
                         </li>
                     {% else %}
+                        <li class="itemMenu fade-out">
+                          <a class="p-4" href="{% url 'index' %}" tabindex="0">Accueil</a>
+                        </li>
                         <li class="itemMenu fade-out">
                             <a class="p-4" href="{% url 'annonces' %}" tabindex="0">Annonces</a>
                         </li>
@@ -92,6 +98,9 @@
             <ul class="flex flex-col ulNavStyle">
                 {% if user.is_authenticated %}
                     <li class="itemMenu">
+                      <a class="block p-4" href="{% url 'index' %}" tabindex="0">Accueil</a>
+                    </li>
+                    <li class="itemMenu">
                         <a class="block p-4" href="{% url 'annonces' %}" tabindex="0">Annonces</a>
                     </li>
                     <li class="itemMenu">
@@ -111,13 +120,16 @@
                     </li>
                 {% else %}
                     <li class="itemMenu">
-                        <a class="block p-4" href="{% url 'annonces' %}" tabindex="0">Annonces</a>
+                      <a class="block p-4" href="{% url 'index' %}" tabindex="0">Accueil</a>
                     </li>
                     <li class="itemMenu">
-                        <a class="block p-4" href="{% url 'connexion' %}" tabindex="0">Connexion</a>
+                      <a class="block p-4" href="{% url 'annonces' %}" tabindex="0">Annonces</a>
                     </li>
                     <li class="itemMenu">
-                        <a class="block p-4" href="{% url 'inscription' %}" tabindex="0">Inscription</a>
+                      <a class="block p-4" href="{% url 'connexion' %}" tabindex="0">Connexion</a>
+                    </li>
+                    <li class="itemMenu">
+                      <a class="block p-4" href="{% url 'inscription' %}" tabindex="0">Inscription</a>
                     </li>
                 {% endif %}
             </ul>
